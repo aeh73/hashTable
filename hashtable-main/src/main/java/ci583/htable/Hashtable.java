@@ -36,18 +36,8 @@ public class Hashtable<V> {
 		 											//the smallest prime number larger than or equal to the requested initial capacity
 
 		arr = new Object[max];		     			//Creates a new Hashtable with the new capacity
+		this.probeType = pt; 						//Sets the user defined probetype
 		
-		switch (pt) {								//Switch statement with probetype as cases
-			case DOUBLE_HASH:						//Double hash sets to double hash
-				probeType = PROBE_TYPE.DOUBLE_HASH;
-				break;	
-			case QUADRATIC_PROBE:					//quadratic sets to quadratic
-				probeType = PROBE_TYPE.QUADRATIC_PROBE;
-				break;	
-			default:								//And with a default probetype of 'LINEAR_PROBE'
-				probeType = PROBE_TYPE.LINEAR_PROBE;
-				break;
-		}
 		
 		//throw new java.lang.UnsupportedOperationException("Not implemented yet.");
 	}
@@ -88,20 +78,21 @@ public class Hashtable<V> {
 	 * @param value 	The value to store against the key.
 	 */
 	public void put(String key, V value) {
-		if(key==null||key==" "){ 
+		if(key == null) {
 			throw new IllegalArgumentException("The key must not be null..");//if key equals null throw nullexception
-			}
-		
-		int index = hash(key);
-		if(arr[index]==null) {				//if empty then place the key+value in the index
-			arr[index]=new Pair(key, value);
+		}
+		if(getLoadFactor()>=maxLoad) {
+			resize();									  //if loadfactor is greater than or equal to maxload then resize table
+		}
+		int index = findEmptyOrSameKey(hash(key), key, 0);//use the hash method to get the hash value of the key
+											              //i.e. returns the index of the pair
+		//Pair pair = new Pair(key, value);
+		if(hasKey(key)==true) {
+			((Pair)arr[index]).value = value;  			  //if the location of the key/value pair already has something in it]
+			return;										  //the value will be overwritten
+		}else {
+			arr[index]=new Pair(key, value);	//else if it hasn't been stored before then store it and increment itemCount 
 			itemCount++;
-		} else {
-			while(arr[index] != null) {
-				
-				arr[index]=new Pair(key, value);
-			}
-			
 		}
 		
 		/*if(key==null||key=="") { throw new IllegalArgumentException("The key must not be null..");}//if key equals null throw nullexception
@@ -110,7 +101,7 @@ public class Hashtable<V> {
 		//Pair pair = new Pair(key, value);				  // create a new Pair object
 		int index = findEmptyOrSameKey(hash(key), key, 1);//use the hash method to get the hash value of the key
 														  //store the object at the index found by calling findEmptyOrSameKey method
-		if(hasKey(key)==true) { 							  //increment itemCount only if the new object has a key that has 
+		if() { 							  //increment itemCount only if the new object has a key that has 
 			arr[index]=new Pair(key, value);							  //not been stored before (use hasKey before storing the new object).
 		}	
 		else { 
@@ -130,8 +121,15 @@ public class Hashtable<V> {
 	 * @param key	The key of the object we are looking for.
 	 * @return		An Optional containing the value we are asked to find, which is empty if the key was not present.
 	 */
-	public Optional<V> get(String key) {		
-		return find(hash(key), key, 1);//In this method you simply return the result of calling find, passing in the hashed key, the key itself and a stepNum of one.
+	public Optional<V> get(String key) {	
+		if(find(hash(key), key, 0)==null) {
+			return Optional.empty();
+		}else {
+			return find(hash(key), key, 0);
+		}
+		
+		
+		//return find(hash(key), key, 1);//In this method you simply return the result of calling find, passing in the hashed key, the key itself and a stepNum of one.
 		//throw new java.lang.UnsupportedOperationException("Not implemented yet.");
 	}
 
@@ -141,7 +139,9 @@ public class Hashtable<V> {
 	 * @return		True if the hashtable contains the key.
 	 */
 	public boolean hasKey(String key) {
-		return get(key) != null;
+		/*Improved code*/
+		return get(key) != null; //calling get(key) aslong as it is not null
+		
 		//Original code
 		/*if (key == null) {throw new NullPointerException("empty");}
 		for (int i = 0;i<itemCount;i++) 		//Loops through the array until it reaches the amount of items stored in the array
@@ -157,11 +157,15 @@ public class Hashtable<V> {
 	 */
 	public Collection<String> getKeys() {
 		ArrayList<String> keys = new ArrayList<>();
-		for(int i = 0; i < arr.length; i++) {
-			String o = (String) arr[i];
-			keys.add(o);
+		for(int i = 0; i < max; i++) {
+			Hashtable<V>.Pair pair = (Hashtable<V>.Pair)arr[i];
+    		String key = pair.key;
+    		keys.add(key); //adds the key to the collection
 		}
 		return keys;
+		
+		//String o = (String) arr[i];
+		//keys.add(o);
 		//throw new java.lang.UnsupportedOperationException("Not implemented yet.");
 	}
 
@@ -379,8 +383,8 @@ public class Hashtable<V> {
 	 *
 	 */
 	private class Pair {
-		private final String key;
-		private final V value;
+		private String key;
+		private V value;
 
 		Pair(String key, V value) {
 			this.key = key;
