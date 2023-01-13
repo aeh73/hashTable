@@ -34,12 +34,8 @@ public class Hashtable<V> {
 	public Hashtable(int initialCapacity, PROBE_TYPE pt) {
 		max = nextPrime(initialCapacity);			//Checks if initial capacity isPrime using the nextPrime method and becomes
 		 											//the smallest prime number larger than or equal to the requested initial capacity
-
 		arr = new Object[max];		     			//Creates a new Hashtable with the new capacity
 		this.probeType = pt; 						//Sets the user defined probetype
-		
-		
-		//throw new java.lang.UnsupportedOperationException("Not implemented yet.");
 	}
 	
 	/**
@@ -48,22 +44,10 @@ public class Hashtable<V> {
 	 */
 	public Hashtable(int initialCapacity) {
 		//Improved code - removed redundant checks
-		max = nextPrime(initialCapacity);	//Checks if initial capacity isPrime using the nextPrime method and becomes
-										    //the smallest prime number larger than or equal to the requested initial capacity
-		
-		arr = new Object[max];		     	//Creates a new Hashtable with the new capacity
-		probeType = PROBE_TYPE.LINEAR_PROBE;//And with a default probetype of 'LINEAR_PROBE'
-				
-				
-				/*if (initialCapacity < 0)
-		            throw new IllegalArgumentException("Illegal Capacity: "+
-		                                               initialCapacity);
-				if (initialCapacity==0)
-		            initialCapacity = 1;
-		        arr = new Object[initialCapacity];
-				defaultProbe = PROBE_TYPE.LINEAR_PROBE;*/
-				
-				//throw new java.lang.UnsupportedOperationException("Not implemented yet.");
+		max = nextPrime(initialCapacity);			//Checks if initial capacity isPrime using the nextPrime method and becomes
+										    		//the smallest prime number larger than or equal to the requested initial capacity
+		arr = new Object[max];		     			//Creates a new Hashtable with the new capacity
+		probeType = PROBE_TYPE.LINEAR_PROBE;		//And with a default probetype of 'LINEAR_PROBE'
 	}
 
 	/**
@@ -86,30 +70,13 @@ public class Hashtable<V> {
 		}
 		int index = findEmptyOrSameKey(hash(key), key, 0);//use the hash method to get the hash value of the key
 											              //i.e. returns the index of the pair
-		//Pair pair = new Pair(key, value);
 		if(hasKey(key)==true) {
-			((Pair)arr[index]).value = value;  			  //if the location of the key/value pair already has something in it]
+			((Pair)arr[index]).value = value;  			  //if the location of the key/value pair already has something in it
 			return;										  //the value will be overwritten
 		}else {
-			arr[index]=new Pair(key, value);	//else if it hasn't been stored before then store it and increment itemCount 
+			arr[index]=new Pair(key, value);			  //else if it hasn't been stored before then store it and increment itemCount 
 			itemCount++;
 		}
-		
-		/*if(key==null||key=="") { throw new IllegalArgumentException("The key must not be null..");}//if key equals null throw nullexception
-			if(getLoadFactor()>=maxLoad){resize();}//if loadfactor is greater than or equal to maxload then resize
-				
-		//Pair pair = new Pair(key, value);				  // create a new Pair object
-		int index = findEmptyOrSameKey(hash(key), key, 1);//use the hash method to get the hash value of the key
-														  //store the object at the index found by calling findEmptyOrSameKey method
-		if() { 							  //increment itemCount only if the new object has a key that has 
-			arr[index]=new Pair(key, value);							  //not been stored before (use hasKey before storing the new object).
-		}	
-		else { 
-			arr[index]=new Pair(key, value);	//else if it hasn't been stored before then store it and increment itemCount 
-			itemCount++;	
-		}*/
-		
-	//throw new java.lang.UnsupportedOperationException("Not implemented yet.");
 	}
 
 	/**
@@ -125,12 +92,8 @@ public class Hashtable<V> {
 		if(find(hash(key), key, 0)==null) {
 			return Optional.empty();
 		}else {
-			return find(hash(key), key, 0);
+			return find(hash(key), key, 0);	
 		}
-		
-		
-		//return find(hash(key), key, 1);//In this method you simply return the result of calling find, passing in the hashed key, the key itself and a stepNum of one.
-		//throw new java.lang.UnsupportedOperationException("Not implemented yet.");
 	}
 
 	/**
@@ -140,15 +103,7 @@ public class Hashtable<V> {
 	 */
 	public boolean hasKey(String key) {
 		/*Improved code*/
-		return get(key).isPresent(); //calling get(key) aslong as it is not null
-		
-		//Original code
-		/*if (key == null) {throw new NullPointerException("empty");}
-		for (int i = 0;i<itemCount;i++) 		//Loops through the array until it reaches the amount of items stored in the array
-			if(arr[i]==key) 
-				return true;		//if  a
-		return false;*/
-		//throw new java.lang.UnsupportedOperationException("Not implemented yet.");
+		return get(key).isPresent(); //calling get(key) while it is present
 	}
 
 	/**
@@ -156,8 +111,7 @@ public class Hashtable<V> {
 	 * @return	The collection of keys.
 	 */
 	public Collection<String> getKeys() {
-		ArrayList<String> keys = new ArrayList<>();
-		
+		ArrayList<String> keys = new ArrayList<>();	
 		for(int i = 0; i < max; i++) {
 			if(arr[i]!=null) {
 				Hashtable<V>.Pair pair = (Hashtable<V>.Pair)arr[i];
@@ -166,10 +120,6 @@ public class Hashtable<V> {
 			}
 		}
 		return keys;
-		
-		//String o = (String) arr[i];
-		//keys.add(o);
-		//throw new java.lang.UnsupportedOperationException("Not implemented yet.");
 	}
 
 	/**
@@ -177,11 +127,9 @@ public class Hashtable<V> {
 	 * @return	The load factor
 	 */
 	public double getLoadFactor() {
-
-		return (double)itemCount/max;//ELSE return the result of the number of
+		return (double)itemCount/max;
 		// items stored divided by the size of the array with 1 of the variables
 		//casted as a double to return a decimal result if needed					 
-		//throw new java.lang.UnsupportedOperationException("Not implemented yet.");
 	}
 
 	/**
@@ -190,7 +138,6 @@ public class Hashtable<V> {
 	 */
 	public int getCapacity() {
 		return max;
-		//throw new java.lang.UnsupportedOperationException("Not implemented yet.");
 	}
 	
 	/**
@@ -205,10 +152,8 @@ public class Hashtable<V> {
 	 * @param key		The key of the Pair object we're looking for.
 	 * @param stepNum	The number of times this method has been called in the current search.
 	 * @return			The value of the Pair object with the right key.
-	 */
-	@SuppressWarnings("unchecked")
-	private Optional<V> find(int startPos, String key, int stepNum) {
-		
+	 */	
+	private Optional<V> find(int startPos, String key, int stepNum) {	
 		if(arr[startPos]==null) {
 			return Optional.empty();
 		}
@@ -218,9 +163,6 @@ public class Hashtable<V> {
 		else { 
 			return find(getNextLocation(startPos, key, stepNum + 1), key, stepNum);
 		}	
-			//int newLocation = getNextLocation(startPos, key, satepNum + 1);
-			//return find(newLocation, key, stepNum);
-		//throw new java.lang.UnsupportedOperationException("Not implemented yet.");
 	}
 
 	/**
@@ -234,14 +176,11 @@ public class Hashtable<V> {
 	 * @param stepNum	The number of times this method has been called in the current search for a location.
 	 * @return			The location at which a Pair object with the key `key' can be stored.
 	 */
-	
 	private int findEmptyOrSameKey(int startPos, String key, int stepNum) {
 		if(arr[startPos]==null || ((Pair)arr[startPos]).key.equals(key))
 			return startPos;
 		else
 			return findEmptyOrSameKey(getNextLocation(startPos, key, stepNum + 1), key, stepNum + 1);
-		
-		//throw new java.lang.UnsupportedOperationException("Not implemented yet.");
 	}
 
 	/**
@@ -296,17 +235,6 @@ public class Hashtable<V> {
 			hash = key.charAt(i) + ((hash << 5) - hash);
 		}
 		return (int) (hash%max);
-		
-		
-		//Code from lecture
-		/*int hashVal = key.charAt(0) - 96;
-		for(int i=0; i<key.length(); i++) { 
-			int c = key.charAt(i) - 96;
-			hashVal = (hashVal * 27 + c) % max;
-		}
-		return hashVal;*/
-	
-		//throw new java.lang.UnsupportedOperationException("Not implemented yet.");
 	}
 
 	/**
@@ -319,7 +247,6 @@ public class Hashtable<V> {
 	private boolean isPrime(int n) {
 	/*Improved code, runs faster more corner cases to remove the need to test every number
 	 *  up until the chosen number*/
-		
 		if(n<2) return false;							  //Corner cases
 		if(n==2||n==3) return true;
 		if(n%2==0 || n%3==0) return false;  			  //eliminates the need to test even numbers
@@ -330,19 +257,6 @@ public class Hashtable<V> {
 				return false;							  //starting at 6.
 				
 		return true;								      //else return true it is a prime number
-		
-		/*Originalcode
-		 * 
-		 *
-		if(n<=1)		 		//Cornercase
-			return false;		//if n is less than or equal to 1 return false
-		
-		for(int i = 2; i<n; i++)//Loop from 2 to n-1
-			if(n % i == 0)      //if the remainder of n/i is equal to 0
-				return false;	//return false as the number is perfectly divisible
-		
-		return true;			//else return true*/
-		//throw new java.lang.UnsupportedOperationException("Not implemented yet.");
 	}
 
 	/**
@@ -355,7 +269,6 @@ public class Hashtable<V> {
 		for(int i = n; true; i++)	//For loop starts at 'n' or that previous prime number and increments up until condition is met
 			if(isPrime(i))			//if 'i' is prime then simply return i
 				return i;
-		//throw new java.lang.UnsupportedOperationException("Not implemented yet.");*/
 	}
 
 	/**
@@ -363,18 +276,16 @@ public class Hashtable<V> {
 	 * the underlying array should be the smallest prime number which is at least twice the size
 	 * of the old array.
 	 */
-	
 	private void resize() {
 		max = nextPrime(max*2);					//set max to a new value which is a prime number at least twice as large as the previous value
 		itemCount = 0;					   		//reset itemCount to zero
 		Object[] oldTable = arr;				//make a copy of the array
         arr = new Object[max];					//set the array to be a new empty array with size `max`
         for(int i = 0; i<oldTable.length; i++)  //loop through the old array calling put for every position that is not null
-        	if(oldTable[i]!=null) {			//Re-adding keys and values aslong as the bucket is not empty from the oldTable
+        	if(oldTable[i]!=null) {				//Re-adding keys and values aslong as the bucket is not empty from the oldTable
         		Pair pair = (Pair)oldTable[i];
         		put(pair.key, pair.value);
         	}
-		//throw new java.lang.UnsupportedOperationException("Not implemented yet.");
 	}
 
 	
