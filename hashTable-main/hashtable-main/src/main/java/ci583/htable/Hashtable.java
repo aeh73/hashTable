@@ -150,15 +150,13 @@ public class Hashtable<V> {
 	 * @return			The value of the Pair object with the right key.
 	 */	
 	private Optional<V> find(int startPos, String key, int stepNum) {	
-		if(arr[startPos]==null) {
+		if (arr[startPos]==null) {
 			return Optional.empty();
-		}
-		else if(((Pair)arr[startPos]).key.equals(key)){
+		} else if(((Pair)arr[startPos]).key.equals(key)){
 			return Optional.of(((Pair)arr[startPos]).value);
-		}
-		else { 
+		} else { 
 			return find(getNextLocation(startPos, key, stepNum + 1), key, stepNum);
-		}	
+		}		
 	}
 
 	/**
@@ -173,10 +171,11 @@ public class Hashtable<V> {
 	 * @return			The location at which a Pair object with the key `key' can be stored.
 	 */
 	private int findEmptyOrSameKey(int startPos, String key, int stepNum) {
-		if(arr[startPos]==null || ((Pair)arr[startPos]).key.equals(key))
+		if (arr[startPos]==null || ((Pair)arr[startPos]).key.equals(key)) {
 			return startPos;
-		else
+		} else {
 			return findEmptyOrSameKey(getNextLocation(startPos, key, stepNum + 1), key, stepNum + 1);
+		}	
 	}
 
 	/**
