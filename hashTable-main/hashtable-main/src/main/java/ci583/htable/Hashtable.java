@@ -62,20 +62,19 @@ public class Hashtable<V> {
 	 * @param value 	The value to store against the key.
 	 */
 	public void put(String key, V value) {
-		if(key == null) {
-			throw new IllegalArgumentException("The key must not be null..");//if key equals null throw nullexception
-		}
-		if(getLoadFactor()>=maxLoad) {
+		if (key == null) {
+			throw new IllegalArgumentException("The key must not be null..");
+		} else if (getLoadFactor()>=maxLoad) {
 			resize();									  //if loadfactor is greater than or equal to maxload then resize table
 		}
-		int index = findEmptyOrSameKey(hash(key), key, 0);//use the hash method to get the hash value of the key
-											              //i.e. returns the index of the pair
-		if(hasKey(key)==true) {
-			((Pair)arr[index]).value = value;  			  //if the location of the key/value pair already has something in it
-			return;										  //the value will be overwritten
-		}else {
+		
+		int index = findEmptyOrSameKey(hash(key), key, 0);//use the hash method to find the hash value of the key
+		if (hasKey(key)==true) {						  //i.e. returns the index of the pair 
+			((Pair)arr[index]).value = value;  			  //if the location of the key/value pair already contains a pair
+			return;										  //the value will be overwritten - this is done by casting a pair on  
+		} else {										  //the arr[index] and retreiving its value
 			arr[index]=new Pair(key, value);			  //else if it hasn't been stored before then store it and increment itemCount 
-			itemCount++;
+			itemCount++;									              
 		}
 	}
 
@@ -89,9 +88,9 @@ public class Hashtable<V> {
 	 * @return		An Optional containing the value we are asked to find, which is empty if the key was not present.
 	 */
 	public Optional<V> get(String key) {	
-		if(find(hash(key), key, 0)==null) {
-			return Optional.empty();
-		}else {
+		if (find(hash(key), key, 0)==null) {		   	 //if the result of calling find with the hashed key,key and stepnum 
+			return Optional.empty(); 				     //returns null return an optional.empty()
+		} else {										 //else return the result of the call
 			return find(hash(key), key, 0);	
 		}
 	}
@@ -102,8 +101,7 @@ public class Hashtable<V> {
 	 * @return		True if the hashtable contains the key.
 	 */
 	public boolean hasKey(String key) {
-		/*Improved code*/
-		return get(key).isPresent(); //calling get(key) while it is present
+		return get(key).isPresent();					 //calling get(key) while it is present
 	}
 
 	/**
@@ -111,12 +109,12 @@ public class Hashtable<V> {
 	 * @return	The collection of keys.
 	 */
 	public Collection<String> getKeys() {
-		ArrayList<String> keys = new ArrayList<>();	
-		for(int i = 0; i < max; i++) {
-			if(arr[i]!=null) {
-				Hashtable<V>.Pair pair = (Hashtable<V>.Pair)arr[i];
-				String key = pair.key;
-				keys.add(key); //adds the key to the collection
+		ArrayList<String> keys = new ArrayList<>();		//Creates arraylist to store keys
+		for(int i = 0; i < max; i++) {					//loops through the array until it reaches max
+			if(arr[i]!=null) {							// if arr[i] still has pair objects then create a new pair object
+				Hashtable<V>.Pair pair = (Hashtable<V>.Pair)arr[i];// that references the arr[i] pair
+				String key = pair.key;					//assign the key of the pair to a single variable key
+				keys.add(key); 							//adds the key to the collection
 			}
 		}
 		return keys;
@@ -127,11 +125,9 @@ public class Hashtable<V> {
 	 * @return	The load factor
 	 */
 	public double getLoadFactor() {
-		return (double)itemCount/max;
-		// items stored divided by the size of the array with 1 of the variables
-		//casted as a double to return a decimal result if needed					 
-	}
-
+		return (double)itemCount/max;					//items stored divided by the size of the array with 1 of the variables
+	}													//casted as a double to return a decimal result if needed					 
+	
 	/**
 	 * Return the maximum capacity of the Hashtable.
 	 * @return	The maximum capacity.
@@ -247,16 +243,21 @@ public class Hashtable<V> {
 	private boolean isPrime(int n) {
 	/*Improved code, runs faster more corner cases to remove the need to test every number
 	 *  up until the chosen number*/
-		if(n<2) return false;							  //Corner cases
-		if(n==2||n==3) return true;
-		if(n%2==0 || n%3==0) return false;  			  //eliminates the need to test even numbers
-		double sqr = Math.sqrt(n)+1;				      //Taking the square root of n and adding 1
-		/*There's no reason to loop the whole way up to n. If you've not found a multiple of n by time you've reached its square root, it's not prime.*/
-		for(int i = 6; i<=sqr; i+=6)					  //reduces the amount of checks needed
-			if(n%(i-1) == 0 || n%(i+1) == 0) 			  //aswell by incrementing by 6 and 
-				return false;							  //starting at 6.
-				
-		return true;								      //else return true it is a prime number
+		if (n<2) {									  //Corner cases
+			return false;							  
+		} else if(n==2||n==3) {
+			return true;
+		} else if(n%2==0 || n%3==0) {				  //eliminates the need to test even numbers
+			return false;  
+		}
+		double sqr = Math.sqrt(n)+1;				  //Taking the square root of n and adding 1					  		
+	/*There's no reason to loop the whole way up to n. If you've not found a multiple of n by time you've reached its square root, it's not prime.*/
+		for (int i = 6; i<=sqr; i+=6) {				  //reduces the amount of checks needed
+			if(n%(i-1) == 0 || n%(i+1) == 0) {		  //aswell by incrementing by 6 and starting at 6.
+				return false;	
+			}								  
+		}
+		return true;								  //else return true it is a prime number		
 	}
 
 	/**
@@ -265,10 +266,11 @@ public class Hashtable<V> {
 	 * @return		The smallest prime number larger than or equal to n
 	 */
 	private int nextPrime(int n) {
-		/*Improved code*/
-		for(int i = n; true; i++)	//For loop starts at 'n' or that previous prime number and increments up until condition is met
-			if(isPrime(i))			//if 'i' is prime then simply return i
+		for(int i = n; true; i++) {					//For loop starts at 'n' or the previous prime number and increments up until 
+			if(isPrime(i)) {						//condition is met - if 'i' is prime then simply return i
 				return i;
+			}
+		}			
 	}
 
 	/**
@@ -283,8 +285,8 @@ public class Hashtable<V> {
         arr = new Object[max];					//set the array to be a new empty array with size `max`
         for(int i = 0; i<oldTable.length; i++)  //loop through the old array calling put for every position that is not null
         	if(oldTable[i]!=null) {				//Re-adding keys and values aslong as the bucket is not empty from the oldTable
-        		Pair pair = (Pair)oldTable[i];
-        		put(pair.key, pair.value);
+        		Pair pair = (Pair)oldTable[i];  //casts each key/value combination from the oldTable as a pair and assigns them to
+        		put(pair.key, pair.value);		//a new pair object followed by calling put on the pair to the new table
         	}
 	}
 
